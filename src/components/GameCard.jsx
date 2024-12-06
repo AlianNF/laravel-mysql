@@ -4,6 +4,18 @@ import { Link } from 'react-router-dom';
 import './GameCard.css';
 
 function GameCard({game}) {
+  let genres = game.genres;
+
+
+try {
+  genres = JSON.parse(genres);
+} catch (error) {
+  console.error('Error parsing genres:', error);
+  genres = []; 
+}
+
+
+const genresString = Array.isArray(genres) ? genres.join(', ') : 'No genres available';
     return (
        <Container>
           <Link to={`/game/${game.id}`} state={{ game }}>
@@ -20,7 +32,7 @@ function GameCard({game}) {
                       {game.metascore} metascore
                     </Col>
                     <Col xs={12} className='Border-Col' >
-                      {game.genres.join(' - ')}
+                      {genres.join(' - ')}
                     </Col>
                   </Row> 
                 </Container>

@@ -7,9 +7,10 @@ function GameList() {
 
   useEffect(() => {
     const fetchGames = async () => {
-      const response = await fetch('https://6706138a031fd46a8311db2c.mockapi.io/api/v1/Game');
+      const response = await fetch('http://localhost:8000/api/games');
       const data = await response.json();
       setGames(data);
+     
     };
 
     fetchGames();

@@ -10,6 +10,18 @@ function GameDetail() {
   if (!game) {
     return <p>No game information provided</p>;
   }
+  let genres = game.genres;
+
+// Intenta parsear la cadena JSON a un array
+try {
+  genres = JSON.parse(genres);
+} catch (error) {
+  console.error('Error parsing genres:', error);
+  genres = []; // Si hay un error, asigna un array vacío como valor por defecto
+}
+
+// Verifica si genres es un array antes de usar .join()
+const genresString = Array.isArray(genres) ? genres.join(', ') : 'No genres available';
 
   return (
     <>
@@ -37,7 +49,7 @@ function GameDetail() {
                     <strong>Metascore:</strong> {game.metascore}
                   </ListGroup.Item>
                   <ListGroup.Item>
-                    <strong>Genres:</strong> {game.genres.join(', ')}
+                    <strong>Genres:</strong> {genres.join(', ')}
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <strong>Description:</strong> {game.description}
