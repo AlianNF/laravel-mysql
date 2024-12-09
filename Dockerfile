@@ -18,7 +18,6 @@ WORKDIR /var/www/html
 # Copiar los archivos del proyecto al contenedor
 COPY . /var/www/html
 
-# Instalar dependencias de Composer
 RUN composer install
 
 # Establecer los permisos correctos para el almacenamiento y el caché
@@ -29,14 +28,8 @@ RUN mkdir -p database && touch database/database.sqlite && \
     chmod -R 775 database
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html
-
-# Cambiar el DocumentRoot para que apunte a la carpeta "public"
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 
-# Agregar ServerName para evitar el error de Apache
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
-
-# Ejecutar las migraciones y el seeder
 RUN php artisan migrate:fresh --seed --force
 
 # Exponer el puerto 80
