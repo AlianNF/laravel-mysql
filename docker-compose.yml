@@ -16,5 +16,5 @@ services:
     environment:
       APP_ENV: local
       APP_DEBUG: "true"
-      APP_KEY: ""
+      APP_KEY: "base64:HdKUqzT18RozZGVC8qa7eNqMzx/zKxwwkmblXQebBHw="
       APP_URL: http://localhost:8000
