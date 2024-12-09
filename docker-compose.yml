@@ -18,4 +18,3 @@ services:
       APP_DEBUG: "true"
       APP_KEY: ""
       APP_URL: http://localhost:8000
-      DB_HOST: "0.0.0.0"
