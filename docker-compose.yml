@@ -9,7 +9,7 @@ services:
     container_name: laravel_app
     restart: always
     ports:
-      - "8000:80"
+      - "8001:80"
     volumes:
       - .:/var/www/html
       - ./storage:/var/www/html/storage
@@ -18,3 +18,4 @@ services:
       APP_DEBUG: "true"
       APP_KEY: "base64:HdKUqzT18RozZGVC8qa7eNqMzx/zKxwwkmblXQebBHw="
       APP_URL: http://localhost:8000
+      DB_HOST: "0.0.0.0"
