@@ -18,21 +18,27 @@ WORKDIR /var/www/html
 # Copiar los archivos del proyecto al contenedor
 COPY . /var/www/html
 
+# Instalar dependencias de Composer
 RUN composer install
 
 # Establecer los permisos correctos para el almacenamiento y el caché
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Configuración de permisos
-RUN mkdir -p database && touch database/database.sqlite && \
-    chmod -R 775 database
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html
+
+# Configuración del VirtualHost para Apache
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 
-RUN php artisan migrate:fresh --seed --force
+# Crear y configurar la base de datos SQLite
+RUN mkdir -p database && touch database/database.sqlite && \
+    chmod -R 775 database && \
+    chown -R www-data:www-data database
+
 # Exponer el puerto 80
 EXPOSE 80
 
+# Script de inicio personalizado
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+RUN chmod +x /usr/local/bin/docker-entrypoint
+
 # Comando predeterminado
-CMD ["apache2-foreground"]
+CMD ["docker-entrypoint"]
