@@ -21,7 +21,7 @@ COPY . /var/www/html
 RUN composer install
 
 # Establecer los permisos correctos para el almacenamiento y el caché
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+#RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Configuración de permisos
 RUN mkdir -p database && touch database/database.sqlite && \
