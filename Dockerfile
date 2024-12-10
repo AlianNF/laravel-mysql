@@ -15,22 +15,29 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Establecer el directorio de trabajo en /var/www/html
 WORKDIR /var/www/html
 
-# Copiar los archivos del proyecto al contenedor
-COPY . /var/www/html
+# Copiar archivos de composición primero para cachear dependencias
+COPY composer.json composer.lock ./
 
-RUN composer install
+# Instalar dependencias de Composer sin scripts
+RUN composer install --no-scripts --no-autoloader
 
-# Establecer los permisos correctos para el almacenamiento y el caché
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Copiar el resto de los archivos del proyecto
+COPY . .
 
-# Configuración de permisos
-RUN mkdir -p database && touch database/database.sqlite && \
-    chmod -R 775 database
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html
+# Generar autoload de Composer
+RUN composer dump-autoload --optimize
+
+# Establecer permisos
+RUN mkdir -p storage bootstrap/cache database \
+    && touch database/database.sqlite \
+    && chmod -R 775 storage bootstrap/cache database \
+    && chown -R www-data:www-data /var/www/html
+
+# Configurar Apache para el directorio público de Laravel
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 
-RUN php artisan migrate:fresh --seed --force
+# Generar clave de aplicación
+RUN php artisan key:generate
 
 # Exponer el puerto 80
 EXPOSE 80

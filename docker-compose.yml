@@ -16,5 +16,9 @@ services:
     environment:
       APP_ENV: local
       APP_DEBUG: "true"
-      APP_KEY: ""
+      APP_KEY: ${APP_KEY:-base64:$(openssl rand -base64 32)}
       APP_URL: http://localhost:8000
+    # Añade estas líneas para manejar migraciones
+    command: >
+      bash -c "php artisan migrate:fresh --seed --force
+      && apache2-foreground"
